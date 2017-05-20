@@ -80,7 +80,7 @@ function save($last_name, $name, $phone)
 }
 
 /**
- * Ищет все записи в файле начинающиеся с фамилиями начинающимися с $last_name
+ * Ищет все записи в файле с фамилиями начинающимися с $last_name
  * @param $last_name
  * @return array|bool
  */

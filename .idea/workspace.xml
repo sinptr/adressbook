@@ -123,7 +123,7 @@
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="SearchEverywhereHistoryKey" value="ter&#9;ACTION&#9;ActivateTerminalToolWindow" />
+    <property name="SearchEverywhereHistoryKey" value="t&#9;ACTION&#9;ActivateTerminalToolWindow&#10;ter&#9;ACTION&#9;ActivateTerminalToolWindow" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -224,7 +224,7 @@
       <workItem from="1495186084687" duration="12622000" />
       <workItem from="1495202545445" duration="1764000" />
       <workItem from="1495287099965" duration="8580000" />
-      <workItem from="1495297575037" duration="490000" />
+      <workItem from="1495297575037" duration="774000" />
     </task>
     <task id="LOCAL-00001" summary="Адресная книга">
       <created>1495198193671</created>
@@ -237,7 +237,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="44237000" />
+    <option name="totallyTimeSpent" value="44521000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="0" width="1376" height="744" extended-state="0" />

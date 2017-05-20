@@ -5,50 +5,8 @@
  * Date: 18.05.2017
  * Time: 20:46
  */
-session_start();
-if($_POST['butt'] == 1)
-{
-    if(safe($_POST['LAST_NAME'], $_POST['NAME'], $_POST['PHONE']) !== true):
-        $_SESSION['ERROR_MSG'] = "Данные неверны";
-        header("location: index.php?name={$_POST['NAME']}&last_name={$_POST['LAST_NAME']}&phone={$_POST['PHONE']}");
 
-    else:
-        unset($_SESSION['ERROR_MSG']);
-        header("location: index.php");
-    endif;
-
-}
-if($_POST['butt'] == 2)
-{
-    $foundName = search($_POST['S_LAST_NAME']);
-    $_SESSION['foundName'] = $foundName;
-    $_SESSION['lastSearched'] = $_POST['S_LAST_NAME'];
-    header("location: index.php");
-}
-if($_POST['butt'] == 3)
-{
-    $_SESSION['fullList'] = getList();
-    header("location: index.php");
-}
-
-if($_GET['delete'])
-{
-    bookDelete($_GET['id']);
-    //var_dump($_GET['id']);
-    if ($_SESSION['showMode'] == 'search'):
-        $foundName = search($_SESSION['lastSearched']);
-        $_SESSION['foundName'] = $foundName;
-    endif;
-    header("location: index.php");
-}
-
-if($_POST['butt'] == 5)
-{
-    $_SESSION['showMode'] = 'showAll';
-    header("location: index.php");
-}
-
-function bookDelete($id)
+function delete($id)
 {
     $file=file("adressbook.txt");
     $fp=fopen("adressbook.txt","w");
@@ -65,41 +23,47 @@ function valid($str, $pattern)
     else return false;
 }
 
-function safe($last_name, $name, $phone)
+function save($last_name, $name, $phone)
 {
-    $allGood = true;
-    $errArr = array();
-    //Проверки
-    $patternName = "/([абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ]+)-?([абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ]+)/";
+    $errors = array();
+    $patternName = "/([абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ]+)-?([абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ]+)/";
     $patternPhone = "/8[0-9]{10}/";
-    $errArr['LAST_NAME'] = valid($_POST['LAST_NAME'], $patternName);
-    $errArr['NAME'] = valid($_POST['NAME'], $patternName);
-    $errArr['PHONE'] = valid($_POST['PHONE'], $patternPhone);
-    $allGood = $errArr['LAST_NAME'] && $errArr['NAME'] && $errArr['PHONE'];
-    if ($allGood)
+    $last_name = trim($last_name);
+    $name = trim($name);
+    $phone = trim($phone);
+    $allGood = array();
+    if(!($allGood[] = valid($last_name, $patternName)))
+    {
+        $errors['LAST_NAME'] = "Фамилия введена неверно";
+    }
+    if(!($allGood[] = valid($name, $patternName)))
+    {
+        $errors['NAME'] = "Имя введено неверно";
+    }
+    if(!($allGood[] = valid($phone, $patternPhone)))
+    {
+        $errors['PHONE'] = "Телефон введен неверно";
+    }
+    if ($allGood[0] && $allGood[1] && $allGood[2])
     {
         $file=file("adressbook.txt");
-        $fp=fopen("adressbook.txt","w");
-        $text="{$_POST['LAST_NAME']}|{$_POST['NAME']}|{$_POST['PHONE']}"."\n";
+        $fp=fopen("adressbook.txt","w+");
+        $text= "{$last_name}|{$name}|{$phone}"."\n";
         $file[] = $text;
         sort($file);
         fputs($fp,implode("",$file));
         fclose($fp);
-        //$fp = fopen('adressbook.txt', 'at');
-
-        //fwrite($fp, $text);
-        //fclose($fp);
         return true;
     }
-    else
-        return $errArr;
+    else {
+        return $errors;
+    }
 }
 
 function search($last_name)
 {
     $i = 0;
     $response = array();
-    $_SESSION['showMode'] = 'search';
     if (strlen($last_name) > 2) {
         $fp = fopen('adressbook.txt', 'rt');
         while (!feof($fp)) {
@@ -113,7 +77,6 @@ function search($last_name)
                     'PHONE' => $sub_arr[2],
                 );
                 $response[$i] = $new_arr;
-                //$response[] = $str;
             endif;
             $i++;
         }
@@ -145,31 +108,4 @@ function getList()
     }
     fclose($fp);
     return $response;
-}
-
-function showArr($arr)
-{
-    if ($arr)
-        foreach ($arr as $str)
-        {
-            $sub_arr = explode('|', $str);
-            foreach ($sub_arr as $s) {
-                print $s." ";
-            }
-            echo "<br>";
-        }
-    else
-        print "Ничего не найдено";
-}
-
-function showList($arr)
-{
-    if ($arr)
-        foreach ($arr as $key => $sub_arr)
-        {
-            foreach ($sub_arr as $s) {
-                print $s." ";
-            }
-            echo "<a href='' id=\"{$key}\">    Удалить</a> <br>";
-        }
 }

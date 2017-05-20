@@ -6,6 +6,12 @@
  * Time: 20:46
  */
 
+mb_internal_encoding("UTF-8");
+
+/**
+ * Удаляет строку в файле с индексом $id
+ * @param $id
+ */
 function delete($id)
 {
     $file=file("adressbook.txt");
@@ -15,6 +21,12 @@ function delete($id)
     fclose($fp);
 }
 
+/**
+ * Проверяет строку на соответствие шаблону
+ * @param $str
+ * @param $pattern
+ * @return bool
+ */
 function valid($str, $pattern)
 {
     preg_match($pattern, $str, $matches);
@@ -23,6 +35,13 @@ function valid($str, $pattern)
     else return false;
 }
 
+/**
+ * Сохраняет запись в файл
+ * @param $last_name
+ * @param $name
+ * @param $phone
+ * @return array|bool
+ */
 function save($last_name, $name, $phone)
 {
     $errors = array();
@@ -60,16 +79,22 @@ function save($last_name, $name, $phone)
     }
 }
 
+/**
+ * Ищет все записи в файле начинающиеся с фамилиями начинающимися с $last_name
+ * @param $last_name
+ * @return array|bool
+ */
 function search($last_name)
 {
     $i = 0;
+    $last_name = trim($last_name);
     $response = array();
     if (strlen($last_name) > 2) {
         $fp = fopen('adressbook.txt', 'rt');
         while (!feof($fp)) {
             $str = fgets($fp);
             $sub_str = stristr($str, '|', true);
-            if (stripos($sub_str, $last_name) === 0):
+            if (mb_stripos($sub_str, $last_name) === 0):
                 $sub_arr = explode('|', $str);
                 $new_arr = array(
                     'LAST_NAME' => $sub_arr[0],
@@ -89,6 +114,10 @@ function search($last_name)
 
 }
 
+/**
+ * Возвращает все строки файла в виде массива
+ * @return array
+ */
 function getList()
 {
     $response = array();
